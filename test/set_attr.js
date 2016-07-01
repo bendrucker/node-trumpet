@@ -19,6 +19,25 @@ test('set attribute', function (t) {
     fs.createReadStream(__dirname + '/set_attr.html').pipe(tr);
 });
 
+test('set by transforming existing attribute', function (t) {
+    t.plan(1);
+    
+    var tr = trumpet();
+    var elem = tr.select('input[type=text]');
+    elem.setAttribute('value', function (value) {
+        return value.toUpperCase();
+    });
+    
+    tr.pipe(concat(function (src) {
+        t.equal(
+            String(src),
+            '<div class="a"><input type="text" value="XYZ"></div>\n'
+        );
+    }));
+    fs.createReadStream(__dirname + '/set_attr.html').pipe(tr);
+});
+
+
 test('create attribute', function (t) {
     t.plan(1);
     
